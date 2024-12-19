@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Viewer</title>
+    <style>
+      table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center">Face Recognition Data</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>NIM</th>
+        </tr>
+      </thead>
+      <tbody id="data-table">
+        {% for item in data %}
+        <tr>
+          <td>{{ item['nama'] }}</td>
+          <td>{{ item['nim'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      // Function to refresh the table data every 5 seconds
+      function refreshData() {
+        fetch("/data")
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.getElementById("data-table");
+            tableBody.innerHTML = ""; // Clear existing rows
+            data.data.forEach((item) => {
+              const row = document.createElement("tr");
+              const nameCell = document.createElement("td");
+              nameCell.textContent = item.nama;
+              const nimCell = document.createElement("td");
+              nimCell.textContent = item.nim;
+              row.appendChild(nameCell);
+              row.appendChild(nimCell);
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => console.error("Error fetching data:", error));
+      }
+
+      // Refresh data every 5 seconds
+      setInterval(refreshData, 4000);
+    </script>
+  </body>
+</html>
